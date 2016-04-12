@@ -1,17 +1,11 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 ## Loading and preprocessing the data
 
-```{r}
+
+```r
 data <- read.csv("activity.csv", header = TRUE, na.strings = "NA")
 data$date <- as.Date( data$date )
 ```
@@ -20,27 +14,63 @@ data$date <- as.Date( data$date )
 * Calculate the total number of steps taken per day
 * Make a histogram of the total number of steps taken each day
 * Calculate and report the mean and median of the total number of steps taken per day
-```{r}
+
+```r
 totals <- tapply( data$steps, data$date, sum, na.rm = TRUE )
 hist(totals)
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)
+
+```r
 mean(totals)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 median(totals)
+```
+
+```
+## [1] 10395
 ```
 
 
 ## What is the average daily activity pattern?
-```{r}
+
+```r
 average_per_interval <- tapply( data$steps, data$interval, mean, na.rm = TRUE )
 
 plot( average_per_interval, type = "l", xlab = "interval", ylab="average steps per interval")
 maksi <- which.max(average_per_interval)
 maksi
+```
+
+```
+## 835 
+## 104
+```
+
+```r
 abline(v=maksi, col="red")
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)
+
 ## Imputing missing values
-```{r}
+
+```r
 sum(is.na(data$steps))
+```
+
+```
+## [1] 2304
+```
+
+```r
 data2 <- data
 
 days <- unique( data$date )
@@ -55,14 +85,30 @@ for (a_day in days)
 
 totals2 <- tapply( data2$steps, data2$date, sum, na.rm = TRUE )
 hist(totals2)
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png)
+
+```r
 mean(totals2)
+```
+
+```
+## [1] 9354.23
+```
+
+```r
 median(totals2)
+```
+
+```
+## [1] 10395
 ```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r}
+
+```r
 data$weekdays <- weekdays( data$date )
 data$weekdays[ data$weekdays %in%  c("понеделник", "вторник", "среда", "четврток", "петок") ] <- "weekday"
 data$weekdays[ data$weekdays %in%  c("сабота","недела") ] <- "weekend"
@@ -78,4 +124,6 @@ df <- data.frame( steps,day,interval )
 library(lattice)
 xyplot(data=df, steps~interval|day,  type='a')
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)
 
